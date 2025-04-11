@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
   res.send('Hello, Refind!')
 })
 
-app.use('/api/items', itemRoutes);
+app.use('/itens', itemRoutes);
 app.listen(3000, () => {
   console.log('Servidor rodando na porta 3000')
 })

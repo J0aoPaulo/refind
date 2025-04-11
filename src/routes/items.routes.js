@@ -3,13 +3,11 @@ const {PrismaClient} = require('@prisma/client');
 const router = express.Router();
 const prisma = new PrismaClient();
 
+
 // Rota para atualizar item pelo codigo
 router.put('/:code', async (req, res) => {
-  console.log('Iniciando atualizacao para codigo:', req.params.code)
   try {
-    const {code} = req.params;
-    console.log('Procurando item com código:', code);
-    
+    const {code} = req.params;   
     const {
       name, 
       date, 
@@ -23,8 +21,9 @@ router.put('/:code', async (req, res) => {
     const existingItem = await prisma.item.findUnique({
       where: {code}
     });
+    
     if(!existingItem) {
-      return res.status(404).json({error: 'item not found'})
+      return res.status(404).json({error: 'Item não encontrado'})
     }
 
     const updateItem = await prisma.item.update({
@@ -41,14 +40,40 @@ router.put('/:code', async (req, res) => {
       include: {category: true}
     });
     return res.status(200).json({
-      message: 'Item updated successfully',
+      message: 'Item atualizado com sucesso',
       item: updateItem
     });
 
   } catch (error){
     console.error('Error updating item:', error);
-    return res.status(500).json({error: 'Error processing request'});
+    return res.status(500).json({error: 'Erro ao processar solicitação'});
   }
 });
+
+router.delete('/:code', async (req, res) => {
+  try {
+    const {code} = req.params;
+
+    const existingItem = await prisma.item.findUnique({
+      where: {code}
+    });
+
+    if(!existingItem){
+      return res.status(404).json({error: "Item não encontrado"})
+    }
+
+    await prisma.item.delete({
+      where: {code}
+    });
+
+    return res.status(200).json({
+      message: "Item removido com sucesso"
+    });
+    
+  } catch (error) {
+    console.error('Erro ao remover item:', error);
+    return res.status(500).json({error: "Erro ao processar solicitação"})
+  }
+})
 
 module.exports = router;
