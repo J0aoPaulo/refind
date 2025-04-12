@@ -1,10 +1,8 @@
-const express = require("express");
-const { PrismaClient } = require("@prisma/client");
-const router = express.Router();
+const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 
 // Listar todas as categorias
-router.get("/", async (req, res) => {
+const getAllCategories = async (req, res) => {
   try {
     const categories = await prisma.category.findMany();
     res.json(categories);
@@ -12,10 +10,10 @@ router.get("/", async (req, res) => {
     console.error("Erro ao listar categorias:", error);
     res.status(500).json({ error: "Erro ao processar solicitação" });
   }
-});
+};
 
 // Criar nova categoria
-router.post("/", async (req, res) => {
+const createCategory = async (req, res) => {
   const { name } = req.body;
   try {
     const newCategory = await prisma.category.create({ data: { name } });
@@ -24,10 +22,10 @@ router.post("/", async (req, res) => {
     console.error("Erro ao criar categoria:", error);
     res.status(500).json({ error: "Erro ao processar solicitação" });
   }
-});
+};
 
 // Buscar categoria por ID
-router.get("/:id", async (req, res) => {
+const getCategoryById = async (req, res) => {
   const { id } = req.params;
   try {
     const category = await prisma.category.findUnique({
@@ -42,10 +40,10 @@ router.get("/:id", async (req, res) => {
     console.error("Erro ao buscar categoria:", error);
     res.status(500).json({ error: "Erro ao processar solicitação" });
   }
-});
+};
 
 // Atualizar categoria por ID
-router.put("/:id", async (req, res) => {
+const updateCategory = async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
   try {
@@ -58,10 +56,10 @@ router.put("/:id", async (req, res) => {
     console.error("Erro ao atualizar categoria:", error);
     res.status(400).json({ error: "Erro ao atualizar categoria", details: error.message });
   }
-});
+};
 
 // Deletar categoria por ID
-router.delete("/:id", async (req, res) => {
+const deleteCategory = async (req, res) => {
   const { id } = req.params;
   try {
     await prisma.category.delete({
@@ -72,6 +70,13 @@ router.delete("/:id", async (req, res) => {
     console.error("Erro ao deletar categoria:", error);
     res.status(500).json({ error: "Erro ao processar solicitação" });
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  getAllCategories,
+  createCategory,
+  getCategoryById,
+  updateCategory,
+  deleteCategory
+}
+
