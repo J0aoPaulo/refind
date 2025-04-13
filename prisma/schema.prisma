@@ -44,6 +44,7 @@ model User {
   name  String
   phone String
   email String @unique
+  password String
   items Item[]
   role  Role   @default(USER)
 }

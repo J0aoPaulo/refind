@@ -1,7 +1,7 @@
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
+const { generateUniqueCode } = require('../utils/codeGenerator')
 
-// Obter itens (com ou sem filtros)
 const getItems = async (req, res) => {
   try {
     const {categoryId, location, status, name} = req.query;
@@ -23,7 +23,7 @@ const getItems = async (req, res) => {
       where,
       include: {
         category: true,
-        user: true,
+        user: false,
       },
       orderBy: {date: 'desc'}
     });
@@ -40,7 +40,6 @@ const getItems = async (req, res) => {
   }
 };
 
-// Criar um novo item
 const createItem = async (req, res) => {
   try {
     const {
@@ -55,12 +54,10 @@ const createItem = async (req, res) => {
       userId, 
     } = req.body;
 
-    // Validação básica dos campos obrigatórios
-    if (!name || !categoryId || !date || !location || !contact || !status || !code) {
+    if (!name || !categoryId || !date || !location || !contact || !status) {
       return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser fornecidos.' });
     }
 
-    // Verificar se a categoria existe
     const category = await prisma.category.findUnique({
       where: { id: parseInt(categoryId) },
     });
@@ -68,6 +65,8 @@ const createItem = async (req, res) => {
     if (!category) {
       return res.status(400).json({ error: 'Categoria inválida.' });
     }
+
+    const itemCode = code || generateUniqueCode();
 
     const newItem = await prisma.item.create({
       data: {
@@ -78,12 +77,12 @@ const createItem = async (req, res) => {
         contact,
         photo,
         status,
-        code,
+        code : ite,
         userId: userId || null,
       },
       include: {
         category: true,
-        user: true,
+        user: false,
       },
     });
 
@@ -93,7 +92,7 @@ const createItem = async (req, res) => {
     return res.status(500).json({ error: 'Erro ao processar solicitação' });
   }
 };
-// Atualizar item pelo código
+
 const updateItem = async (req, res) => {
   try {
     const {code} = req.params;   
@@ -115,7 +114,6 @@ const updateItem = async (req, res) => {
       return res.status(404).json({error: 'Item não encontrado'})
     }
 
-    // Prepara dados para atualização
     const updateData = {
       name: name || existingItem.name,
       date: date ? new Date(date) : existingItem.date,
@@ -146,7 +144,6 @@ const updateItem = async (req, res) => {
   }
 };
 
-// Excluir item pelo código
 const deleteItem = async (req, res) => {
   try {
     const {code} = req.params;

@@ -1,7 +1,6 @@
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// Listar todas as categorias
 const getAllCategories = async (req, res) => {
   try {
     const categories = await prisma.category.findMany();
@@ -12,7 +11,6 @@ const getAllCategories = async (req, res) => {
   }
 };
 
-// Criar nova categoria
 const createCategory = async (req, res) => {
   const { name } = req.body;
   try {
@@ -24,7 +22,6 @@ const createCategory = async (req, res) => {
   }
 };
 
-// Buscar categoria por ID
 const getCategoryById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -42,7 +39,6 @@ const getCategoryById = async (req, res) => {
   }
 };
 
-// Atualizar categoria por ID
 const updateCategory = async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
@@ -58,14 +54,13 @@ const updateCategory = async (req, res) => {
   }
 };
 
-// Deletar categoria por ID
 const deleteCategory = async (req, res) => {
   const { id } = req.params;
   try {
     await prisma.category.delete({
       where: { id: parseInt(id) },
     });
-    res.status(204).send(); // 204 No Content para deleção bem-sucedida
+    res.status(204).send();
   } catch (error) {
     console.error("Erro ao deletar categoria:", error);
     res.status(500).json({ error: "Erro ao processar solicitação" });

@@ -1,35 +1,22 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-const createUser = async (req, res) => {
-  const { name, phone, email, role } = req.body;
-
-  try {
-    const newUser = await prisma.user.create({
-      data: {
-        name,
-        phone,
-        email,
-        role: role || "USER"
-      }
-    });
-    res.status(201).json(newUser);
-  } catch (error) {
-    console.error("Erro ao criar usuário:", error);
-    res.status(400).json({ error: "Erro ao criar usuário", details: error.message });
-  }
-};
-
 const createAdmin = async (req, res) => {
-  const { name, phone, email, role } = req.body;
+  const { name, phone, email, role, password } = req.body;
 
   try {
+    let hashedPassword = null;
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    }
+
     const newAdmin = await prisma.user.create({
       data: {
         name, 
         phone,
         email,
-        role : role || "ADMIN"
+        role: role || "ADMIN",
+        password: hashedPassword
       }
     });
     res.status(201).json(newAdmin);
@@ -37,7 +24,7 @@ const createAdmin = async (req, res) => {
     console.error("Erro ao criar admin", error);
     res.status(400).json({ error: "Erro ao criar usuário", details: error.message });
   }
-}
+};
 
 const getAllUsers = async (req, res) => {
   try {
@@ -103,8 +90,8 @@ const deleteUserById = async (req, res) => {
 
 module.exports = {
   getAllUsers,
-  createUser,
   getUserById,
   updateUserById,
-  deleteUserById
+  deleteUserById,
+  createAdmin
 };
