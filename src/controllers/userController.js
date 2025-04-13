@@ -1,25 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-const createUser = async (req, res) => {
-  const { name, phone, email, role } = req.body;
-
-  try {
-    const newUser = await prisma.user.create({
-      data: {
-        name,
-        phone,
-        email,
-        role: role || "USER"
-      }
-    });
-    res.status(201).json(newUser);
-  } catch (error) {
-    console.error("Erro ao criar usuário:", error);
-    res.status(400).json({ error: "Erro ao criar usuário", details: error.message });
-  }
-};
-
 const createAdmin = async (req, res) => {
   const { name, phone, email, role } = req.body;
 
