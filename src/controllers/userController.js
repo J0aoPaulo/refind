@@ -1,24 +1,17 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-const getAllUsers = async (req, res) => {
-  try {
-    const users = await prisma.user.findMany({
-      include: {items: true}
-    });
-    res.json(users);
-
-  } catch (error) {
-    console.error("Erro ao listar usuários:", error);
-    res.status(500).json({ error: "Erro ao processar solicitação" });
-  }
-};
-
 const createUser = async (req, res) => {
-  const { name, phone, email } = req.body;
+  const { name, phone, email, role } = req.body;
+
   try {
     const newUser = await prisma.user.create({
-      data: { name, phone, email }
+      data: {
+        name,
+        phone,
+        email,
+        role: role || "USER"
+      }
     });
     res.status(201).json(newUser);
   } catch (error) {
@@ -27,11 +20,42 @@ const createUser = async (req, res) => {
   }
 };
 
+const createAdmin = async (req, res) => {
+  const { name, phone, email, role } = req.body;
+
+  try {
+    const newAdmin = await prisma.user.create({
+      data: {
+        name, 
+        phone,
+        email,
+        role : role || "ADMIN"
+      }
+    });
+    res.status(201).json(newAdmin);
+  } catch (error) {
+    console.error("Erro ao criar admin", error);
+    res.status(400).json({ error: "Erro ao criar usuário", details: error.message });
+  }
+}
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      include: { items: true }
+    });
+    res.json(users);
+  } catch (error) {
+    console.error("Erro ao listar usuários:", error);
+    res.status(500).json({ error: "Erro ao processar solicitação" });
+  }
+};
+
 const getUserById = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await prisma.user.findUnique({
-      where: { id: id }, 
+      where: { id },
     });
     if (user) {
       res.json(user);
@@ -46,11 +70,16 @@ const getUserById = async (req, res) => {
 
 const updateUserById = async (req, res) => {
   const { id } = req.params;
-  const { name, phone, email } = req.body;
+  const { name, phone, email, role } = req.body;
   try {
     const updatedUser = await prisma.user.update({
-      where: { id: id }, // Correção aqui
-      data: { name, phone, email },
+      where: { id },
+      data: {
+        name,
+        phone,
+        email,
+        role
+      },
     });
     res.json(updatedUser);
   } catch (error) {
@@ -63,9 +92,9 @@ const deleteUserById = async (req, res) => {
   const { id } = req.params;
   try {
     await prisma.user.delete({
-      where: { id: id }, // Correção aqui
+      where: { id },
     });
-    res.status(204).send(); // 204 No Content para deleção bem-sucedida
+    res.status(204).send();
   } catch (error) {
     console.error("Erro ao deletar usuário:", error);
     res.status(500).json({ error: "Erro ao processar solicitação" });
@@ -79,7 +108,3 @@ module.exports = {
   updateUserById,
   deleteUserById
 };
-
-
-
-

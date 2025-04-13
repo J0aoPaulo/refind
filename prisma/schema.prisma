@@ -12,6 +12,12 @@ enum Status {
   FOUND
 }
 
+enum Role {
+  USER
+  ADMIN
+  OWNER
+}
+
 model Item {
   id         Int      @id @default(autoincrement())
   name       String
@@ -39,4 +45,5 @@ model User {
   phone String
   email String @unique
   items Item[]
+  role  Role   @default(USER)
 }
