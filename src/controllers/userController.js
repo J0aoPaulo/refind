@@ -1,21 +1,20 @@
-const express = require("express");
 const { PrismaClient } = require("@prisma/client");
-const router = express.Router();
 const prisma = new PrismaClient();
 
-// Listar todos os usuários 
-router.get("/", async (req, res) => {
+const getAllUsers = async (req, res) => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: {items: true}
+    });
     res.json(users);
+
   } catch (error) {
     console.error("Erro ao listar usuários:", error);
     res.status(500).json({ error: "Erro ao processar solicitação" });
   }
-});
+};
 
-// Criar novo usuário
-router.post("/", async (req, res) => {
+const createUser = async (req, res) => {
   const { name, phone, email } = req.body;
   try {
     const newUser = await prisma.user.create({
@@ -26,14 +25,13 @@ router.post("/", async (req, res) => {
     console.error("Erro ao criar usuário:", error);
     res.status(400).json({ error: "Erro ao criar usuário", details: error.message });
   }
-});
+};
 
-// Buscar usuário por ID
-router.get("/:id", async (req, res) => {
+const getUserById = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await prisma.user.findUnique({
-      where: { id: id }, // Correção aqui
+      where: { id: id }, 
     });
     if (user) {
       res.json(user);
@@ -44,10 +42,9 @@ router.get("/:id", async (req, res) => {
     console.error("Erro ao buscar usuário:", error);
     res.status(500).json({ error: "Erro ao processar solicitação" });
   }
-});
+};
 
-// Atualizar usuário por ID
-router.put("/:id", async (req, res) => {
+const updateUserById = async (req, res) => {
   const { id } = req.params;
   const { name, phone, email } = req.body;
   try {
@@ -60,10 +57,9 @@ router.put("/:id", async (req, res) => {
     console.error("Erro ao atualizar usuário:", error);
     res.status(400).json({ error: "Erro ao atualizar usuário", details: error.message });
   }
-});
+};
 
-// Deletar usuário por ID
-router.delete("/:id", async (req, res) => {
+const deleteUserById = async (req, res) => {
   const { id } = req.params;
   try {
     await prisma.user.delete({
@@ -74,6 +70,16 @@ router.delete("/:id", async (req, res) => {
     console.error("Erro ao deletar usuário:", error);
     res.status(500).json({ error: "Erro ao processar solicitação" });
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  getAllUsers,
+  createUser,
+  getUserById,
+  updateUserById,
+  deleteUserById
+};
+
+
+
+
