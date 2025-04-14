@@ -77,7 +77,7 @@ const createItem = async (req, res) => {
         contact,
         photo,
         status,
-        code : ite,
+        code : itemCode,
         userId: userId || null,
       },
       include: {
