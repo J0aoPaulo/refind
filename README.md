@@ -159,15 +159,6 @@ O sistema implementa três níveis de acesso:
 2. **🛡️ ADMIN**: Administrador, acesso a funções de gerenciamento
 3. **👑 OWNER**: Proprietário do sistema, acesso total incluindo criação de administradores
 
-## ⚠️ Problemas Conhecidos e Melhorias Futuras
-
-1. Há um erro de digitação no método `createItem` no controlador de itens onde a variável `itemCode` é usada como `ite` na criação do item.
-2. O método `createAdmin` no controlador de usuários tenta usar `bcrypt` e `SALT_ROUNDS` sem importá-los.
-3. Melhorar a validação de entradas do usuário.
-4. Implementar testes automatizados.
-5. Adicionar funcionalidade de recuperação de senha.
-6. Melhorar a documentação da API com Swagger ou similar.
-
 ## 📱 Como Usar
 
 ### Registro e Login
