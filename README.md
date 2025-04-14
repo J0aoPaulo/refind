@@ -13,6 +13,11 @@ ReFind é uma aplicação web desenvolvida para gerenciar itens perdidos e encon
 - **Containerização**: Docker e Docker Compose
 - **Segurança**: Bcrypt para hash de senhas
 
+## 📚 Documentação da API
+
+- Swagger disponível em: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+
+
 ## 📁 Estrutura de Pastas
 
 ```
