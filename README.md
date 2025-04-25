@@ -1,3 +1,5 @@
+![CI Status](https://github.com/Refind-Team/refind-back/actions/workflows/ci.yml/badge.svg)
+
 # 🔍 ReFind - Sistema de Itens Perdidos e Encontrados
 
 ## 📋 Visão Geral
