@@ -1,5 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const bcrypt = require('bcrypt');
+const SALT_ROUNDS = 10;
 
 const createAdmin = async (req, res) => {
   const { name, phone, email, role, password } = req.body;
